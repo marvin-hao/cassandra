@@ -33,6 +33,9 @@ import org.apache.cassandra.utils.ByteBufferUtil;
 import org.apache.cassandra.utils.MurmurHash;
 import org.apache.cassandra.utils.ObjectSizes;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.primitives.Longs;
 
 /**
@@ -44,6 +47,7 @@ public class Murmur3Partitioner implements IPartitioner
     public static final long MAXIMUM = Long.MAX_VALUE;
 
     private static final int HEAP_SIZE = (int) ObjectSizes.measureDeep(MINIMUM);
+    private static final Logger logger = LoggerFactory.getLogger(Murmur3Partitioner.class);
 
     public static final Murmur3Partitioner instance = new Murmur3Partitioner();
     public static final AbstractType<?> partitionOrdering = new PartitionerDefinedOrder(instance);
@@ -69,6 +73,7 @@ public class Murmur3Partitioner implements IPartitioner
 
     public Token midpoint(Token lToken, Token rToken)
     {
+        logger.info("midpoint");
         // using BigInteger to avoid long overflow in intermediate operations
         BigInteger l = BigInteger.valueOf(((LongToken) lToken).token),
                    r = BigInteger.valueOf(((LongToken) rToken).token),
@@ -96,6 +101,7 @@ public class Murmur3Partitioner implements IPartitioner
 
     public Token split(Token lToken, Token rToken, double ratioToLeft)
     {
+        logger.info("split");
         BigDecimal l = BigDecimal.valueOf(((LongToken) lToken).token),
                    r = BigDecimal.valueOf(((LongToken) rToken).token),
                    ratio = BigDecimal.valueOf(ratioToLeft);
@@ -218,6 +224,8 @@ public class Murmur3Partitioner implements IPartitioner
 
     private LongToken getToken(ByteBuffer key, long[] hash)
     {
+        logger.info("get token");
+
         if (key.remaining() == 0)
             return MINIMUM;
 
