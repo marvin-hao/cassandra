@@ -239,7 +239,7 @@ public class Murmur3Partitioner implements IPartitioner
                 (key.get(start + 7) & 0x04) == 0
         ) {
             logger.info("Found hint");
-            MurmurHash.hash3_x64_128(key, key.position() + 4, key.remaining(), 0, hash);
+            MurmurHash.hash3_x64_128(key, key.position() + 4, key.remaining() - 4, 0, hash);
         }
         else
             MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
