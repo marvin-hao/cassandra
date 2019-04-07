@@ -17,26 +17,24 @@
  */
 package org.apache.cassandra.dht;
 
+import com.google.common.primitives.Longs;
+import org.apache.cassandra.db.DecoratedKey;
+import org.apache.cassandra.db.PreHashedDecoratedKey;
+import org.apache.cassandra.db.marshal.AbstractType;
+import org.apache.cassandra.db.marshal.LongType;
+import org.apache.cassandra.db.marshal.PartitionerDefinedOrder;
+import org.apache.cassandra.exceptions.ConfigurationException;
+import org.apache.cassandra.utils.ByteBufferUtil;
+import org.apache.cassandra.utils.MurmurHash;
+import org.apache.cassandra.utils.ObjectSizes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import org.apache.cassandra.db.DecoratedKey;
-import org.apache.cassandra.db.PreHashedDecoratedKey;
-import org.apache.cassandra.db.marshal.AbstractType;
-import org.apache.cassandra.db.marshal.PartitionerDefinedOrder;
-import org.apache.cassandra.db.marshal.LongType;
-import org.apache.cassandra.exceptions.ConfigurationException;
-import org.apache.cassandra.utils.ByteBufferUtil;
-import org.apache.cassandra.utils.MurmurHash;
-import org.apache.cassandra.utils.ObjectSizes;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.primitives.Longs;
 
 /**
  * This class generates a BigIntegerToken using a Murmur3 hash.
@@ -219,12 +217,13 @@ public class Murmur3Partitioner implements IPartitioner
      */
     public LongToken getToken(ByteBuffer key)
     {
+        logger.info(String.format("get token: %d", key.getLong()));
+
         return getToken(key, getHash(key));
     }
 
     private LongToken getToken(ByteBuffer key, long[] hash)
     {
-        logger.info("get token");
 
         if (key.remaining() == 0)
             return MINIMUM;
