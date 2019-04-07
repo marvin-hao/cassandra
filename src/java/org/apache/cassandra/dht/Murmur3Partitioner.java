@@ -232,7 +232,12 @@ public class Murmur3Partitioner implements IPartitioner
     {
         long[] hash = new long[2];
         int start = key.position();
-        if (key.remaining() >= 4 && (key.get(start) & 0x01) == 0 && (key.get(start + 3) & 0x04) == 0) {
+        if (key.remaining() >= 8 &&
+                (key.get(start + 0) & 0x01) == 0 &&
+                (key.get(start + 1) & 0x01) == 0 &&
+                (key.get(start + 6) & 0x04) == 0 &&
+                (key.get(start + 7) & 0x04) == 0
+        ) {
             logger.info("Found hint");
             MurmurHash.hash3_x64_128(key, key.position() + 4, key.remaining(), 0, hash);
         }
