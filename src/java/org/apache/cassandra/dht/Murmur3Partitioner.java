@@ -231,7 +231,13 @@ public class Murmur3Partitioner implements IPartitioner
     private long[] getHash(ByteBuffer key)
     {
         long[] hash = new long[2];
-        MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
+        int start = key.position();
+        if ((key.get(start) & 0xaa) == 0 && (key.get(start + 3) & 0xaa) == 0) {
+            logger.info("Found hint");
+            MurmurHash.hash3_x64_128(key, key.position() + 4, key.remaining(), 0, hash);
+        }
+        else
+            MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
         return hash;
     }
 
