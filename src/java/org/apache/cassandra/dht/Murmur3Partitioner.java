@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -73,7 +72,6 @@ public class Murmur3Partitioner implements IPartitioner
 
     public Token midpoint(Token lToken, Token rToken)
     {
-        logger.info("Midpoint");
         // using BigInteger to avoid long overflow in intermediate operations
         BigInteger l = BigInteger.valueOf(((LongToken) lToken).token),
                    r = BigInteger.valueOf(((LongToken) rToken).token),
@@ -101,7 +99,6 @@ public class Murmur3Partitioner implements IPartitioner
 
     public Token split(Token lToken, Token rToken, double ratioToLeft)
     {
-        logger.info("split");
         BigDecimal l = BigDecimal.valueOf(((LongToken) lToken).token),
                    r = BigDecimal.valueOf(((LongToken) rToken).token),
                    ratio = BigDecimal.valueOf(ratioToLeft);
@@ -233,7 +230,6 @@ public class Murmur3Partitioner implements IPartitioner
 
     private long[] getHash(ByteBuffer key)
     {
-        logger.info("getHash: " + StandardCharsets.UTF_8.decode(key).toString());
         long[] hash = new long[2];
         MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
         return hash;
