@@ -65,7 +65,6 @@ public class Murmur3Partitioner implements IPartitioner
 
     public DecoratedKey decorateKey(ByteBuffer key)
     {
-        logger.info("DecorateKey");
         long[] hash = getHash(key);
         return new PreHashedDecoratedKey(getToken(key, hash), key, hash[0], hash[1]);
     }
@@ -238,11 +237,11 @@ public class Murmur3Partitioner implements IPartitioner
             (key.get(start + 6) == 0x04) &&
             (key.get(start + 7) == 0x04)
         ) {
-            logger.info("Found hint");
             MurmurHash.hash3_x64_128(key, key.position() + 8, key.remaining() - 8, 0, hash);
         }
         else
             MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
+        logger.info("hash value: {}, {}", Long.toString(hash[0]), Long.toString(hash[1]));
         return hash;
     }
 
