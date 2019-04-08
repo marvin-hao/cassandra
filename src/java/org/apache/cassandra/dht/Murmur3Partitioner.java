@@ -242,6 +242,7 @@ public class Murmur3Partitioner implements IPartitioner
         else
             MurmurHash.hash3_x64_128(key, key.position(), key.remaining(), 0, hash);
         logger.info("hash value: {}, {}", Long.toString(hash[0]), Long.toString(hash[1]));
+        hash[1] = 0;
         return hash;
     }
 
