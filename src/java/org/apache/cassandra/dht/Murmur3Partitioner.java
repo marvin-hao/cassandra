@@ -231,13 +231,15 @@ public class Murmur3Partitioner implements IPartitioner
     {
         long[] hash = new long[2];
         int start = key.position();
-        if  (key.remaining() >= 8 &&
+        if  (key.remaining() >= 12 &&
             (key.get(start + 0) == 0x01) &&
             (key.get(start + 1) == 0x01) &&
-            (key.get(start + 6) == 0x04) &&
-            (key.get(start + 7) == 0x04)
+            (key.get(start + 10) == 0x04) &&
+            (key.get(start + 11) == 0x04)
         ) {
-            MurmurHash.hash3_x64_128(key, key.position() + 8, key.remaining() - 8, 0, hash);
+//            MurmurHash.hash3_x64_128(key, key.position() + 12, key.remaining() - 12, 0, hash);
+            ByteBuffer readOnlyKey = key.asReadOnlyBuffer();
+            hash[0] = readOnlyKey.getLong(2);
             hash[1] = 0;
         }
         else
